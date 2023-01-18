@@ -3,18 +3,15 @@ const { Sequelize } = require('sequelize');
 const fs = require('fs');
 const path = require('path');
 const {
-  DB_USER, DB_PASSWORD, DB_HOST,
+  PGUSER, PGPASSWORD, PGHOST, PGDATABASE, PGPORT
 } = process.env;
 
-// postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/videogames
-// postgresql://postgres:TbBuHpjK4Y9Pn7b8ckuu@containers-us-west-79.railway.app:6929/railway
-//const sequelize = new Sequelize(`postgresql://postgres:TbBuHpjK4Y9Pn7b8ckuu@containers-us-west-79.railway.app:6929/railway`, {
-const sequelize = new Sequelize(`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/videogames`, {
+const sequelize = new Sequelize(`postgresql://${PGUSER}:${PGPASSWORD}@${PGHOST}:${PGPORT}/${PGDATABASE}`, {
   logging: false, // set to console.log to see the raw SQL queries
   native: false, // lets Sequelize know we can use pg-native for ~30% more speed
 });
-const basename = path.basename(__filename);
 
+const basename = path.basename(__filename);
 const modelDefiners = [];
 
 // Leemos todos los archivos de la carpeta Models, los requerimos y agregamos al arreglo modelDefiners
@@ -37,7 +34,6 @@ const { Videogame, Genre } = sequelize.models;
 
 // Aca vendrian las relaciones
 // Product.hasMany(Reviews);
-
 Videogame.belongsToMany(Genre, { through: 'videogame_genre' })
 Genre.belongsToMany(Videogame, { through: 'videogame_genre' })
 
